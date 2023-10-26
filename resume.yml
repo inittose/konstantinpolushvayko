@@ -1,85 +1,45 @@
 contact:
-  name: John Doe
-  email: john@doe.com
-  date_of_birth: 01/01/1990
-  job: Python Developer
+  name: Полушвайко Константин
+  email: pol.konnik@gmail.com
+  date_of_birth: 20/04/2004
+  job: DevOps инженер
   summary: |
-        Hi, my name is John and I'm a Python dev since 2012.
-        Please hire me!
+        Я начинающий DevOps-инженер, возьмите меня хотя-бы Junior'ом
   location:
-    address: 10 Downing Street
-    city: London
-    country: UK
-    zip: SW1A 2AA
-  phone: '+44612345678'
-experiences:
-- company: Foo company
-  position: Senior Python Developer
-  start_date: January 2018
-  summary: |
-        Developer for the main Foo webapp.
-        I also worked on migration from python 2.7 to 3.6.
-        I've been scrum master for a team of 8 people.
-        I added automated unit tests to the codebase.
-  website: https://foo.com
-  tags:
-  - flask
-  - mongodb
-  - redis
-  - pytest
-  - scrum
-- company: Bar company
-  position: Python developer
-  start_date: January 2014
-  end_date: December 2017
-  summary: |
-        I developped Bar backoffice main features and
-        worked on CI/CD
-  website: https://bar.net
-  tags:
-  - django
-  - mysql
-  - jenkins
-- company: Bar company
-  position: Junior python developer
-  start_date: January 2012
-  end_date: December 2013
-  website: https://bar.net
-  summary: |
-        I made multiple KPI dashboards and
-        provided automation scripts
+    address: Мечникова 1д
+    city: Томск
+    country: Россия
+  phone: '+79832370090'
+experiences: Нет опыта
 profiles:
-- network: Facebook
-  url: https://facebook.com/johndoe
-- network: Twitter
-  url: https://twitter.com/nottherealjohndoe
-- network: Personal website
-  url: https://john.doe.fake
+- network: Vk
+  url: https://vk.com/inittose
+- network: Telegram
+  url: https://t.me/inittose
 education:
-- degree: Bachelor of Software Engineering
-  start_date: January 2008
-  end_date: January 2012
-  institution: University of California, Berkeley
-  website: https://www.berkeley.edu
+- degree: Неоконченное высшее
+  start_date: Сентябрь 2022
+  end_date: Сентябрь 2026
+  institution: Томский государственный университет систем управления и радиоэлектроники
+  website: https://tusur.ru/ru
 skills:
-- name: Python
-  level: 90
-- name: Flask
+- name: С++
+  level: 65
+- name: Git
   level: 80
 - name: Scrum
   level: 80
-- name: Java
+- name: Python
   level: 50
 languages:
-- name: English
-  level: Native language
-- name: French
-  level: Proficient
+- name: Русский
+  level: Родной язык
+- name: Английский
+  level: B2
 projects:
-- name: foo.bar
-  description: Just an useless app
-  url: https://github.com/johndoe/foo.bar
+- name: Здесь пока пусто...
 hobbies:
-- name: History
-- name: Sport
-  details: Running and weightlifting
+- name: Программирование
+  details: Создаю проекты на микроконтроллерах
+- name: Спорт
+  details: Пауэрлифтинг
