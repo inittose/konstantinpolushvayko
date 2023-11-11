@@ -4,11 +4,11 @@
 
 ## Пункт 1
 
-![](.\1.1.png)
+![](./11.png)
 
 <center> Рисунок 1.1 - Unit systemd </center>
 
-![](.\1.2.png)
+![](./12.png)
 
 <center> Рисунок 1.2 - Проверка работы Unit`a</center>
 
