@@ -3,7 +3,7 @@ set -e
 
 SCRIPT_DIR=$(readlink -f $(dirname $BASH_SOURCE))
 ROOT_DIR=$(readlink -f "$SCRIPT_DIR/..")
-BUILD_PATH="$ROOT_DIR/$BUILD_PATH"
+BUILD_PATH="$SCRIPT_DIR/$BUILD_PATH"
 
 source $ROOT_DIR/.env
 

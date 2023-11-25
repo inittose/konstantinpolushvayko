@@ -1,0 +1,14 @@
+details:
+  first_name: Константин
+  last_name: Полушвайко
+  title: DevOps engineer
+
+profile: |
+  Я начинающий DevOps-инженер, возьмите меня хотя-бы Junior'ом
+
+contact:
+- text: my@domain.net
+  url: "mailto:my@domain.net"
+  icon: email
+
+technical: []
