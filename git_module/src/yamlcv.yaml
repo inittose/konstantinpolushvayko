@@ -1,14 +1,19 @@
 details:
   first_name: Константин
   last_name: Полушвайко
-  title: DevOps engineer
+  title: DevOps-инженер
 
 profile: |
   Я начинающий DevOps-инженер, возьмите меня хотя-бы Junior'ом
 
 contact:
-- text: my@domain.net
-  url: "mailto:my@domain.net"
+- text: pol.konnik@gmail.com
+  url: "mailto:pol.konnik@gmail.com"
   icon: email
+- text: Томск, Россия
+  icon: location
+- text: gitlab-tusur.faciem.ru/student-repos/konstantinpolushvayko
+  url: http://gitlab-tusur.faciem.ru/student-repos/konstantinpolushvayko
+  icon: gitlab
 
 technical: []

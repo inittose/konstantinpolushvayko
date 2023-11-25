@@ -13,23 +13,33 @@ categories:
 
 skills:
 - name: python
-  level: middle
-  category: *lang # this is YAML alias
+  level: junior
+  category: *lang
   labels:
     - programming
-- name: golang
+- name: C++
   level: middle
   category: *lang
   labels:
     - programming
+- name: C#
+  level: junior
+  category: *lang
+  labels:
+    - programming
+- name: golang
+  level: junior
+  category: *lang
+  labels:
+    - programming
 - name: docker
-  level: middle
+  level: junior
   labels:
     - tools
     - technology
   category: *containers
 - name: docker-compose
-  level: middle
+  level: junior
   category: *containers
   labels:
     - tools
@@ -38,16 +48,11 @@ skills:
   category: *containers
   labels:
     - technology
-- name: jenkins
-  level: middle
-  category: *cicd
-  labels:
-    - tools
 - name: GitHub Actions
-  level: middle
+  level: junior
   category: *cicd
   labels:
     - tools
 - name: AWS
-  level: middle
+  level: junior
   category: *cloud
