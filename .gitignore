@@ -1,0 +1,7 @@
+*.html
+*.json
+*.pdf
+build
+build/*
+.idea
+.DS_Store
