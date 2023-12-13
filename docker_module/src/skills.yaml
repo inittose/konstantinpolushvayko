@@ -1,0 +1,58 @@
+# This file is used to extend skills with additional fields and used
+# as source for generating "technical" list in yamlcv.yaml.
+
+categories:
+  - &lang # this is YAML Anchor
+    Languages
+  - &containers
+    Containers & Orchestration
+  - &cicd
+    CI/CD
+  - &cloud
+    Cloud
+
+skills:
+- name: python
+  level: junior
+  category: *lang
+  labels:
+    - programming
+- name: C++
+  level: middle
+  category: *lang
+  labels:
+    - programming
+- name: C#
+  level: junior
+  category: *lang
+  labels:
+    - programming
+- name: golang
+  level: junior
+  category: *lang
+  labels:
+    - programming
+- name: docker
+  level: junior
+  labels:
+    - tools
+    - technology
+  category: *containers
+- name: docker-compose
+  level: junior
+  category: *containers
+  labels:
+    - tools
+- name: k8s
+  level: middle
+  category: *containers
+  labels:
+    - technology
+- name: GitHub Actions
+  level: junior
+  category: *cicd
+  labels:
+    - tools
+- name: AWS
+  level: junior
+  category: *cloud
