@@ -1,0 +1,35 @@
+version: '3'
+
+dotenv: ['.env']
+
+tasks:
+  build:
+    cmds:
+      - scripts/build.sh
+
+  json:
+      deps:
+        - build
+      cmds:
+       - yq '. | to_json' ${BUILD_PATH}/${CV}.yaml > ${BUILD_PATH}/${CV}.json
+
+  skill_by_level:
+    yq '.skills[] | select(.level == "{{.CLI_ARGS}}") | .name' ${SRC_PATH}/skills.yaml
+
+  docker-build:
+    docker build --target build -t resume .
+
+  docker-release:
+    docker build --target release -t resume .
+
+  docker-run-build:
+    deps:
+      - docker-build
+    cmds:
+      - docker run -it --rm resume
+
+  docker-run-release:
+    deps:
+      - docker-release
+    cmds:
+      - docker run -it --rm resume
