@@ -1,5 +1,9 @@
-# Выбираем образ Ubuntu
-FROM ubuntu:22.04
+# Выбираем образ Ubuntu и
+# преписываем ему этап (stage) build.
+# Чтобы остановиться на конкретном этапе
+# нужно прописать:
+# docker build --target build -t resume .
+FROM ubuntu:22.04 AS build
 
 # Переменные Dockerfile
 ARG YQ_VERSION=v4.40.5
@@ -7,7 +11,9 @@ ARG YQ_BINARY=yq_linux_amd64
 ARG TASK_VERSION=v3.32.0
 ARG TASK_BINARY=task_linux_amd64.tar.gz
 
-# Создаем слои посредством скачивания пакетов
+# Скачиваем нужные пакеты (утилиты),
+# чтобы собрать проект (во время этого процесса
+# будут создаваться новые слои в контейнере)
 RUN apt-get update &&  \
     apt-get install -y \
       libfontconfig1 \
@@ -29,10 +35,20 @@ RUN wget -O- https://github.com/go-task/task/releases/download/${TASK_VERSION}/$
 WORKDIR /app
 
 # Копируем нужные файлы в контейнер
-COPY .env .env
+COPY .env .
 COPY src/ src/
 COPY scripts/ scripts/
-COPY Taskfile.yaml Taskfile.yaml
+COPY Taskfile.yaml .
 
 # Собираем наш проект
 RUN task build
+
+# Используя многоэтапную сборку (multi-stage builds),
+# выбираем новый образ, чтобы скопировать туда cv.html
+FROM busybox AS release
+
+WORKDIR /app
+
+# --from=build означает, что мы будем копировать
+# файлы из контейнера этапа build
+COPY --from=build /app/build/cv.html /app/

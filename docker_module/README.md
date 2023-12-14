@@ -1,69 +1,155 @@
-# Практическая работа №2 "Работа с Git"
-## Тема: "Модуль Git"
+# Практическая работа №3 "Технологии контейнеризации"
+## Тема: "Модуль Docker"
 
-- Подготовил Полушвайко Константин Николаевич
+- Подготовил: **Полушвайко Константин Николаевич**
+- Место учебы: ТУСУР, ФВС, КСУП, группа 582-1
 
-![](./example.png)
+## Задание 3.1 Docker
+1. Создайте собственный форк репозитория с примером.
+1. Добавьте Dockerfile для сборки следующих образов.
+    1. **Образ 1**, который содержит:
+        - Необходимые файлы и утилиты для осуществления сборки версии резюме внутри контейнера.
+        - Использует в качестве основной команды `task` и позволяет выполнять автоматизированные задачи при запуске контейнера.
+        - При запуске контейнера без дополнительных агрументов, выполняет задачу сборки.
+    1. **Образ 2**, который содержит только собранную версию резюме в формате HTML и экспортирует её для использования в других контейнерах.
+1. Автоматизируйте задачу сборки образов.
+1. Оптимизируйте процесс сборки образов.
 
-# YAML CV
-В качестве реализации создания резюме был использован [yaml-cv](https://github.com/haath/yaml-cv).
 
-## Настройка
+## Ход работы
+Для начала создадим `Dockerfile` который будет содержать все наши инструкции. Определим задачи:
+- Изначальный образ должен поддерживать все инструменты сборки резюме из 2 практики;
+- Нужно установить все необходимые пакеты и утилиты в образ;
+- Непосредственно сборка резюме.
 
-Установите [yq v4](https://mikefarah.gitbook.io/yq/), например:
-```shell
-brew install yq@4
+Начнем писать наш `Dockerfile`. В качестве базового образа выберем `ubuntu:22.04`:
+```Dockerfile
+FROM ubuntu:22.04
 ```
 
-Установите [yaml-cv](https://github.com/haath/yaml-cv):
-```shell
-gem install yaml-cv
+Далее для удобства определим переменные при помощи оператора `ARG`:
+```Dockerfile
+ARG YQ_VERSION=v4.40.5
+ARG YQ_BINARY=yq_linux_amd64
+ARG TASK_VERSION=v3.32.0
+ARG TASK_BINARY=task_linux_amd64.tar.gz
 ```
 
-Для создания PDF-версии, требуется `wkhtmltopdf`:
-```shell
-brew install wkhtmltopdf
+Чтобы установить все пакеты воспользуемся инструкцией `RUN`:
+```Dockerfile
+RUN apt-get update &&  \
+    apt-get install -y \
+      libfontconfig1 \
+      libxtst6 \
+      rubygems \
+      wget \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN gem install yaml-cv
+RUN wget https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/${YQ_BINARY} -O /usr/bin/yq \
+    && chmod +x /usr/bin/yq
+
+RUN wget -O- https://github.com/go-task/task/releases/download/${TASK_VERSION}/${TASK_BINARY} \
+    | tar xz -C /usr/bin
 ```
 
-Установите [Taskfile](https://taskfile.dev):
-```shell
-brew install go-task/tap/go-task
+Определим рабочую директорию:
+```Dockerfile
+WORKDIR /app
 ```
 
-## Использование
-
-```shell
-task --list-all
+Скопируем все скрипты, исходные файлы в слой образа:
+```Dockerfile
+COPY .env .env
+COPY src/ src/
+COPY scripts/ scripts/
+COPY Taskfile.yaml Taskfile.yaml
 ```
 
-### Исходный код включает 2 компонента:
-- [src/yamlcv.yaml](src/yamlcv.yaml)
-
-  Шаблон резюме в формате [yaml-cv](https://github.com/haath/yaml-cv)
-  Сюда добавляется актуальная информация не касающаяся технических навыков.
-- [src/skills.yaml](src/skills.yaml)
-
-  Список навыков в расширенном формате. Навык должен обязательно включать `category` и `name`, а так же любой набор дополнительных полей.
-
-### Сборка
-
-Запустите:
-```shell
-task build
+Теперь мы можем собрать наш проект:
+```Dockerfile
+RUN task build
 ```
 
-### Конвертация в JSON
-
-```shell
-task json
+Первый образ готов, теперь мы можем его собрать и запустить:
+```bash
+docker image build -t resume .
+docker run -it --rm resume
 ```
 
-### Поиск
+Если мы введем эти команды, то выведется консоль контейнера, который содержит все наши исходные данные и собранные файлы.
 
-Вывод навыков по уровню владения (`junior|middle|senior`):
-```shell
-task skill_by_level -- <level>
+---
+
+Далее нам необходимо реализовать 2-й образ, который будет принимать `cv.html`. Чтобы упростить нашу задачу, воспользуемся многоэтапной сборкой (**multi-stage build**) в `Dockerfile`. Изменим `FROM ubuntu:22.04` из первой части на:
+```Dockerfile
+FROM ubuntu:22.04 AS build
 ```
 
-#### Пример
-![](./automation.png)
+Мы определили этап с `ubuntu` как этап сборки, теперь мы можем создать второй этап, используя базовый образ `busybox`, и назовем его `release`:
+```Dockerfile
+FROM busybox AS release
+```
+
+> **Почему `busybox`?** Потому что это очень легкий образ, который
+>может предназначаться для многих несложных задач, в нашем случае
+>хранение cv.html.
+
+Сразу можно определить рабочую директорию для удобства работы:
+```Dockerfile
+WORKDIR /app
+```
+
+Теперь, когда у нас есть четкое разделение на этапы, мы можем обратиться к прошлому этапу `build`, чтобы скопировать оттуда собранный файл `cv.html`:
+```Dockerfile
+COPY --from=build /app/build/cv.html .
+```
+
+Чтобы собрать образ и запустить его можно использовать код, который мы уже писали для сборки первого образа:
+```bash
+docker image build -t resume .
+docker run -it --rm resume
+```
+
+Но тогда соберутся все этапы. Чтобы этого избежать можно применить `--target`. Пример сборки **предыдущего** этапа:
+```bash
+docker image build --target build -t resume .
+docker run -it --rm resume
+```
+
+---
+
+Теперь, когда мы разобрались с образами можем переходить к автоматизации через `task`. Определим следующие задачи в `taskfile`:
+- `docker-build`
+- `docker-release`
+- `docker-run-build`
+- `docker-run-release`
+
+В `taskfile.yaml` это будет выглядеть так:
+```yaml
+docker-build:
+  docker build --target build -t resume .
+
+docker-release:
+  docker build --target release -t resume .
+
+docker-run-build:
+  deps:
+    - docker-build
+  cmds:
+    - docker run -it --rm resume
+
+docker-run-release:
+  deps:
+    - docker-release
+  cmds:
+    - docker run -it --rm resume
+```
+
+Пример сборки и запуска через `task`:
+```bash
+task docker-run-build
+```
+
+**Задача 3.1 решена**
