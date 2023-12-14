@@ -51,4 +51,4 @@ WORKDIR /app
 
 # --from=build означает, что мы будем копировать
 # файлы из контейнера этапа build
-COPY --from=build /app/build/cv.html /app/
+COPY --from=build /app/build/cv.html /app/index.html

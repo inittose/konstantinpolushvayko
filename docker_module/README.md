@@ -152,4 +152,76 @@ docker-run-release:
 task docker-run-build
 ```
 
-**Задача 3.1 решена**
+**Задача 3.1 выполенена**
+
+
+## Задание 3.2 Docker-compose
+1. Используйте [nginx](https://nginx.org/ru/) в качеcтве веб-сервера:
+    - nginx выполняется в контейнере и использует [официальный образ](https://hub.docker.com/_/nginx);
+    - конфигурационный файл nginx хранится локально;
+    - используется только протокол HTTP;
+    - вывод логов nginx доступен через команду `docker logs`;
+1. Реализуйте возможность сборки образа приложения через docker-compose.
+1. Реализуйте команды запуска и остановки приложения средствами локальной автоматизации (Taskfile).
+
+## Ход работы
+Для начала создаем файл `docker-compose.yml`. Начнем его заполнять:
+```yaml
+version: '3'
+
+services:
+  resume_builder:
+    build: .
+```
+
+Теперь, если мы поднимем `docker-compose` у нас соберется новый образ и сразу же запустится. Для запуска используем:
+```bash
+docker-compose up
+```
+
+Далее, мы научились собирать и запускать контейнеры, нужно запустить nginx с нашим резюме. Попробуем запустить `nginx`:
+```yaml
+  nginx:
+    image: nginx
+    ports:
+      - "8080:80"
+```
+
+При запуске `docker-compose up` можно зайти на `localhost:8080` и увидеть:
+![nginx](images/nginx.png)
+
+Осталось связать вывод из `resume_builder` и `nginx`. Чтобы это сделать создадим пустой том `resume` в `docker-compose.yml`, в котором мы будем хранить резюме в `.html`:
+```yaml
+volumes:
+  resume:
+```
+
+Надо добавить в этот том наше резюме. Вот как будет выглядеть `resume_builder`:
+```yaml
+  resume_builder:
+    build: .
+    volumes:
+      - resume:/app
+```
+
+Тем временем в `nginx` надо добавить зависимость от `resume_builder` и монтировать резюме в `/usr/share/nginx/html`:
+```yaml
+  nginx:
+    depends_on:
+      - resume_builder
+    image: nginx
+    volumes:
+      - resume:/usr/share/nginx/html
+    ports:
+      - "8080:80"
+```
+
+Запустим проект: `docker-compose up -d`. В `localhost:8080` можно увидеть:
+![resume](images/resume.png)
+
+Чтобы остановить контейнеры вводим в консоль:
+```bash
+docker-compose stop
+```
+
+**Задача 3.2 выполенена**

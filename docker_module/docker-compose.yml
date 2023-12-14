@@ -1,0 +1,37 @@
+# Указываем версию docker-compose
+version: '3'
+
+# В services описываем все контейнеры
+services:
+
+  # Вызываем контейнер на основе Dockerfile
+  resume_builder:
+
+    # Создаем образ из Dockerfile
+    build: .
+
+    # Записывем резюме в .html на локальный том
+    volumes:
+      - resume:/app
+
+  # Вызываем контейнер с nginx
+  nginx:
+
+    # Указываем, что дожидаемся resume_builder
+    depends_on:
+      - resume_builder
+
+    # Указываем базовый образ
+    image: nginx
+
+    # Монтируем резюме в .html в нужную папку nginx
+    volumes:
+      - resume:/usr/share/nginx/html
+
+    # Указываем порт
+    ports:
+      - "8080:80"
+
+# Создадим пустой том
+volumes:
+  resume:
